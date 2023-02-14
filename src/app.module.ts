@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { MoviesModule } from './movies/movies.module';
-import { AppController } from './movies/app.controller';
+import { AppController } from './app.controller';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   //데코레이터
-  imports: [MoviesModule],
+  imports: [AuthModule],
   controllers: [AppController],
   providers: [],
 })

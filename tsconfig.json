@@ -4,6 +4,7 @@
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
+    "esModuleInterop": true, // import * as from 'React'; 를 없이
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "target": "es2017",
