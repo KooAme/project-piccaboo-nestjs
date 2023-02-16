@@ -1,13 +1,12 @@
-import { join } from 'path';
 import { User } from 'src/users/entities/user.entity';
 
 export const a = {
-  type: 'mysql' as 'mysql',
+  type: 'postgres' as 'postgres',
   host: 'localhost',
-  port: 3306,
-  username: 'root',
+  port: 5432,
+  username: 'koo',
   password: '',
-  database: 'passport',
-  entities: [User],
+  database: 'picaboo',
+  entities: ['dist/**/*.entity{.ts,.js}'],
   synchronize: true,
 };
