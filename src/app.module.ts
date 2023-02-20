@@ -6,8 +6,7 @@ import { LoggerMiddleware } from './middlewares/logger.middlewares';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Connection } from 'typeorm';
-import { a } from './database/ormconfig';
+import { typeORMConfig } from './database/ormconfig';
 import { User } from './users/entities/user.entity';
 //const getEnv = async () => {
 //  const response = await 비동기처리가 필요할 때 load를 사용하면 env도 비동기가 가능
@@ -19,7 +18,7 @@ import { User } from './users/entities/user.entity';
     ConfigModule.forRoot({ isGlobal: true }),
     UsersModule,
     AuthModule,
-    TypeOrmModule.forRoot(a),
+    TypeOrmModule.forRoot(typeORMConfig),
   ], //load:[getEnv]
   controllers: [AppController],
   providers: [AppService, ConfigService],

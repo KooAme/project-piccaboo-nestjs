@@ -1,18 +1,22 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { IsEmail, IsString } from 'class-validator';
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm';
 
 @Entity()
-export class User {
+export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
+  @IsEmail()
   email: string;
 
   @Column()
-  nickname: string;
+  @IsString()
+  password: string;
 
   @Column()
-  password: string;
+  @IsString()
+  nickname: string;
 
   @Column({ nullable: true })
   refreshToken: string;

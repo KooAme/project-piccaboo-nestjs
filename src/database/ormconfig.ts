@@ -1,12 +1,12 @@
-import { User } from 'src/users/entities/user.entity';
-
-export const a = {
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from '../users/entities/user.entity';
+export const typeORMConfig: TypeOrmModule = {
   type: 'postgres' as 'postgres',
   host: 'localhost',
   port: 5432,
   username: 'koo',
-  password: '',
+  password: 'Ayakoobori4114!!',
   database: 'picaboo',
-  entities: ['dist/**/*.entity{.ts,.js}'],
+  entities: [User],
   synchronize: true,
 };
