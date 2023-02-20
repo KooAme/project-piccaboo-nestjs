@@ -3,6 +3,7 @@ import { User } from '../entities/user.entity';
 import { Repository } from 'typeorm';
 import { CustomRepository } from 'src/common/custom-repository.decorator';
 import { InjectRepository } from '@nestjs/typeorm';
+
 @Injectable()
 @CustomRepository(User)
 export class UserRespository {
@@ -14,6 +15,15 @@ export class UserRespository {
   async existsUser(email) {
     try {
       const exists = await this.userRespository.findOneBy({ email });
+      return exists;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async existsNickname(nickname) {
+    try {
+      const exists = await this.userRespository.findOneBy({ nickname });
       return exists;
     } catch (error) {
       console.error(error);
