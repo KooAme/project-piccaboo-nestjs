@@ -6,6 +6,7 @@ import { UserRespository } from 'src/users/repositories/users.repository';
 import { AuthDto } from './dto/auth.dto';
 import * as bcrypt from 'bcryptjs';
 import argon2 from 'argon2';
+import { domainToASCII } from 'url';
 
 @Injectable()
 export class AuthService {
@@ -20,7 +21,7 @@ export class AuthService {
       createUserDto.email,
     );
     if (userExists) {
-      throw new BadRequestException('User already exists');
+      throw new BadRequestException('This user already exists');
     }
 
     const nicknameExists = await this.userRespository.existsNickname(
@@ -30,19 +31,29 @@ export class AuthService {
       throw new BadRequestException('This nickname already exists');
     }
     const hash = await argon2.hash(createUserDto.password);
-    // return await this.userRespository.create(createUserDto)
+    const newUser = await this.userRespository.createUser(
+      createUserDto.email,
+      hash,
+      createUserDto.nickname,
+    );
+
     const { email, nickname } = createUserDto;
+    const tokens = await this.getTokens({
+      sub: newUser.id,
+      nickname: newUser.nickname,
+    });
+    // http only -> refreshtoken
     await this.userRespository.createUser(email, hash, nickname);
-    // 바로 로그인처리?
-    // 유저만 만들고 성공 보내기
-    return { message: 'success create user!' };
+    return { message: 'success create user!' }; // accessToken
   }
 
-  async signIn(createUserDto: CreateUserDto): Promise<any> {
-    // const { email, password } = createUserDto;
-
+  async signIn(data: AuthDto): Promise<any> {
     try {
-      // const user = await this.user
+      const user = await this.userRespository.existsUser(data.email);
+      if (!user) throw new BadRequestException('Check your email.');
+
+      const passwordCheck = await bcrypt.compare(data.password, user.password);
+      if (!passwordCheck) throw new BadRequestException('Check your password.');
     } catch (error) {
       console.error(error);
     }
@@ -54,15 +65,16 @@ export class AuthService {
   }
 
   async getTokens(payload: { sub: number; nickname: string }) {
-    const accessToken = await this.jwtService.signAsync(payload, {
-      expiresIn: '15m',
-      secret: process.env.JWT_ACCESS_SECRET,
-    });
-
-    const refreshToken = await this.jwtService.signAsync(payload, {
-      expiresIn: '7d',
-      secret: process.env.JWT_REFRESH_SECRET,
-    });
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAsync(payload, {
+        expiresIn: 60 * 15,
+        secret: this.configService.get('JWT_ACCESS_SECRET'),
+      }),
+      this.jwtService.signAsync(payload, {
+        expiresIn: 60 * 60 * 24 * 7,
+        secret: this.configService.get('JWT_REFRESH_SECRET'),
+      }),
+    ]);
 
     return { accessToken, refreshToken };
   }
