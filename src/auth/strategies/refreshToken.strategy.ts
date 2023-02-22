@@ -12,7 +12,7 @@ export class RefreshTokenStrategy extends PassportStrategy(
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: process.env.JWT_REFRESH_SECRET,
-      passReqToCallback: true,
+      passReqToCallback: true, //validate메서드에서 요청 객체에 접근 할 수 있도록
     });
   }
 
