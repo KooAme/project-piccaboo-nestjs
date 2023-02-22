@@ -5,8 +5,7 @@ import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { UserRespository } from 'src/users/repositories/users.repository';
 import { AuthDto } from './dto/auth.dto';
 import * as bcrypt from 'bcryptjs';
-import argon2 from 'argon2';
-import { domainToASCII } from 'url';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -30,38 +29,31 @@ export class AuthService {
     if (nicknameExists) {
       throw new BadRequestException('This nickname already exists');
     }
-    const hash = await argon2.hash(createUserDto.password);
-    const newUser = await this.userRespository.createUser(
-      createUserDto.email,
-      hash,
-      createUserDto.nickname,
-    );
-
+    const hash = await bcrypt.hash(createUserDto.password, 10);
     const { email, nickname } = createUserDto;
-    const tokens = await this.getTokens({
-      sub: newUser.id,
-      nickname: newUser.nickname,
-    });
-    // http only -> refreshtoken
+
     await this.userRespository.createUser(email, hash, nickname);
-    return { message: 'success create user!' }; // accessToken
+    return { message: 'Success create user!' };
   }
 
-  async signIn(data: AuthDto): Promise<any> {
+  async signIn(data: AuthDto, res: Response): Promise<any> {
     try {
       const user = await this.userRespository.existsUser(data.email);
       if (!user) throw new BadRequestException('Check your email.');
 
       const passwordCheck = await bcrypt.compare(data.password, user.password);
+
       if (!passwordCheck) throw new BadRequestException('Check your password.');
+      const tokens = await this.getTokens({
+        sub: user.id,
+        nickname: user.nickname,
+      });
+      res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true });
+      return { accessToken: tokens.accessToken };
     } catch (error) {
-      console.error(error);
+      console.log(error);
+      throw new BadRequestException('Failed Login');
     }
-    //JWT표준,일관성 유지를 위해 userId값을 sub속성이름을 선택
-    return {
-      // access_token: this.jwtService.sign(payload),
-      //user객체 속성의 하위 집합에서 JWT를 생성한 다음 단일 access토큰 속성을 가진 객체로 반환
-    };
   }
 
   async getTokens(payload: { sub: number; nickname: string }) {

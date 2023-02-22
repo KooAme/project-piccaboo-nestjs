@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { User } from '../entities/user.entity';
 import { Repository } from 'typeorm';
 import { CustomRepository } from 'src/common/custom-repository.decorator';
@@ -17,7 +17,7 @@ export class UserRespository {
       const exists = await this.userRespository.findOneBy({ email });
       return exists;
     } catch (error) {
-      console.error(error);
+      throw new BadRequestException('Exists User');
     }
   }
 
@@ -26,7 +26,7 @@ export class UserRespository {
       const exists = await this.userRespository.findOneBy({ nickname });
       return exists;
     } catch (error) {
-      console.error(error);
+      throw new BadRequestException('Exists Nickname');
     }
   }
 
@@ -37,7 +37,7 @@ export class UserRespository {
       );
       return user;
     } catch (error) {
-      console.error(error);
+      throw new BadRequestException('Create User error');
     }
   }
 }

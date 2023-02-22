@@ -1,6 +1,5 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { LoggerMiddleware } from './middlewares/logger.middlewares';
 import { UsersModule } from './users/users.module';
@@ -20,7 +19,7 @@ import { User } from './users/entities/user.entity';
     AuthModule,
     TypeOrmModule.forRoot(typeORMConfig),
   ], //load:[getEnv]
-  controllers: [AppController],
+  controllers: [],
   providers: [AppService, ConfigService],
 })
 export class AppModule implements NestModule {

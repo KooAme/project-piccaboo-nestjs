@@ -1,7 +1,9 @@
+import { IsString } from 'class-validator';
+
 export class AuthDto {
-  id: string;
+  @IsString()
   email: string;
+
+  @IsString()
   password: string;
-  nickname: string;
-  refreshToken: string;
 }
