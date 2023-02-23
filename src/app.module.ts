@@ -7,6 +7,8 @@ import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeORMConfig } from './database/ormconfig';
 import { User } from './users/entities/user.entity';
+import { DiaryController } from './diary/controllers/diary.controller';
+import { DiaryModule } from './diary/diary.module';
 //const getEnv = async () => {
 //  const response = await 비동기처리가 필요할 때 load를 사용하면 env도 비동기가 가능
 //}
@@ -18,8 +20,9 @@ import { User } from './users/entities/user.entity';
     UsersModule,
     AuthModule,
     TypeOrmModule.forRoot(typeORMConfig),
+    DiaryModule,
   ], //load:[getEnv]
-  controllers: [],
+  controllers: [DiaryController],
   providers: [AppService, ConfigService],
 })
 export class AppModule implements NestModule {
