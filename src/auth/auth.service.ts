@@ -22,17 +22,17 @@ export class AuthService {
     if (userExists) {
       throw new BadRequestException('This user already exists');
     }
-
-    const nicknameExists = await this.userRespository.existsNickname(
-      createUserDto.nickname,
-    );
-    if (nicknameExists) {
-      throw new BadRequestException('This nickname already exists');
-    }
+    // 닉네임 유효성검사
+    // const nicknameExists = await this.userRespository.existsNickname(
+    //   createUserDto.nickname,
+    // );
+    // if (nicknameExists) {
+    //   throw new BadRequestException('This nickname already exists');
+    // }
     const hash = await bcrypt.hash(createUserDto.password, 10);
-    const { email, nickname } = createUserDto;
+    const { email } = createUserDto;
 
-    await this.userRespository.createUser(email, hash, nickname);
+    await this.userRespository.createUser(email, hash);
     return { message: 'Success create user!' };
   }
 
@@ -46,7 +46,6 @@ export class AuthService {
       if (!passwordCheck) throw new BadRequestException('Check your password.');
       const tokens = await this.getTokens({
         sub: user.id,
-        nickname: user.nickname,
       });
       res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true });
       return { accessToken: tokens.accessToken };
@@ -56,7 +55,7 @@ export class AuthService {
     }
   }
 
-  async getTokens(payload: { sub: number; nickname: string }) {
+  async getTokens(payload: { sub: number }) {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
         expiresIn: 60 * 15,

@@ -14,9 +14,9 @@ export class User extends BaseEntity {
   @IsString()
   password: string;
 
-  @Column()
-  @IsString()
-  nickname: string;
+  // @Column()
+  // @IsString()
+  // nickname: string;
 
   @Column({ nullable: true })
   refreshToken: string;
