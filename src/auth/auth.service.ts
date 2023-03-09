@@ -22,17 +22,17 @@ export class AuthService {
     if (userExists) {
       throw new BadRequestException('This user already exists');
     }
-    // 닉네임 유효성검사
-    // const nicknameExists = await this.userRespository.existsNickname(
-    //   createUserDto.nickname,
-    // );
-    // if (nicknameExists) {
-    //   throw new BadRequestException('This nickname already exists');
-    // }
-    const hash = await bcrypt.hash(createUserDto.password, 10);
-    const { email } = createUserDto;
 
-    await this.userRespository.createUser(email, hash);
+    const nicknameExists = await this.userRespository.existsNickname(
+      createUserDto.nickname,
+    );
+    if (nicknameExists) {
+      throw new BadRequestException('This nickname already exists');
+    }
+    const hash = await bcrypt.hash(createUserDto.password, 10);
+    const { email, nickname } = createUserDto;
+
+    await this.userRespository.createUser(email, hash, nickname);
     return { message: 'Success create user!' };
   }
 

@@ -21,20 +21,19 @@ export class UserRespository {
     }
   }
 
-  // 닉네임 임시
-  // async existsNickname(nickname) {
-  //   try {
-  //     const exists = await this.userRespository.findOneBy({ nickname });
-  //     return exists;
-  //   } catch (error) {
-  //     throw new BadRequestException('Exists Nickname');
-  //   }
-  // }
+  async existsNickname(nickname) {
+    try {
+      const exists = await this.userRespository.findOneBy({ nickname });
+      return exists;
+    } catch (error) {
+      throw new BadRequestException('Exists Nickname');
+    }
+  }
 
-  async createUser(email, password) {
+  async createUser(email, password, nickname) {
     try {
       const user = await this.userRespository.save(
-        this.userRespository.create({ email, password }),
+        this.userRespository.create({ email, password, nickname }),
       );
       return user;
     } catch (error) {

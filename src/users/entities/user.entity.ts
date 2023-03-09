@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { IsEmail, IsString } from 'class-validator';
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm';
 
@@ -14,10 +15,11 @@ export class User extends BaseEntity {
   @IsString()
   password: string;
 
-  // @Column()
-  // @IsString()
-  // nickname: string;
+  @Column()
+  @IsString()
+  nickname: string;
 
   @Column({ nullable: true })
+  @Exclude()
   refreshToken: string;
 }
