@@ -1,4 +1,4 @@
-import { IsBoolean, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsString } from 'class-validator';
 import {
   Column,
   CreateDateColumn,
@@ -19,6 +19,14 @@ export class Diary {
   @Column({ type: 'text' })
   @IsString()
   content: string;
+
+  @Column()
+  @IsNumber()
+  year: number;
+
+  @Column()
+  @IsNumber()
+  month: number;
 
   @CreateDateColumn()
   createdAt: Date;

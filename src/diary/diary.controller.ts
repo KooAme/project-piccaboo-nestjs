@@ -6,26 +6,35 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
+import { AccessTokenGuard } from 'src/auth/guards/accessToken.guard';
 import { DiaryService } from './diary.service';
 
 @Controller('diarys')
 export class DiaryController {
   constructor(private diaryService: DiaryService) {}
 
-  @Get('/:id')
+  @Get()
   getAllDiary() {
+    //모든 diary가져오기
     return this.diaryService.getAllDiarys();
   }
 
-  @Delete('/:id')
-  deleteDiary() {}
+  @Get('/:id')
+  getDiary() {
+    //diary한개
+  }
 
-  @Put('/:id')
-  putDiary() {}
-
+  @UseGuards(AccessTokenGuard)
   @Post()
-  createDiary(@Body('title') title: string, @Body('content') content: string) {
+  createDiary() {
     // return this.diaryService.createDiary(title, content);
   }
+
+  @Delete()
+  deleteDiary() {}
+
+  @Put()
+  putDiary() {}
 }
