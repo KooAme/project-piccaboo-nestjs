@@ -12,17 +12,20 @@ export class DiaryRepository {
     private readonly diaryRepository: Repository<Diary>,
   ) {}
 
-  async createDiary({ title, content }) {
+  async createDiary({ title, content, year, month, userId }) {
     try {
+      const user = await this.usersRepository.findOneBy({ id: userId });
       const diary = await this.diaryRepository.save(
         this.diaryRepository.create({
           title,
           content,
+          year,
+          month,
+          user,
         }),
       );
       console.log(diary);
-
-      return true;
+      return diary;
     } catch (error) {
       console.error(error);
       return false;
